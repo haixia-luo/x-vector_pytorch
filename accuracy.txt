@@ -1,0 +1,2 @@
+net_fb_40epoch_regularization 124 correct 2140 total
+net_fb_60epoch_without_regularization 
