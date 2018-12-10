@@ -6,7 +6,7 @@ import numpy as np
 import torchvision.transforms as transforms
 
 class TestSet(data.Dataset):
-	def __init__(self, root, transforms = None):
+	def __init__(self, root):
 		speakers_dir = os.listdir(root)
 		self.speakers = len(speakers_dir)
 		self.speakers_dir = np.asarray(speakers_dir)
@@ -22,11 +22,10 @@ class TestSet(data.Dataset):
 		for i in range(len(speech)):
 			speech[i] = speech[i].split('_')[0] + '/' + speech[i]
 		self.speech = np.asarray(speech)
-		self.trans = transforms
 
 	def __getitem__(self, index):
 		features_server = FeaturesServer(features_extractor = None,
-										 feature_filename_structure = './all_feature/{}.h5',
+										 feature_filename_structure = '../all_feature/{}.h5',
 										 sources = None,
 										 dataset_list = ['fb'],
 										 mask = None, 
@@ -53,10 +52,7 @@ class TestSet(data.Dataset):
 		features = t.tensor(features)
 		img = transforms.ToPILImage()(features)
 		features = transforms.Resize((24, 400))(img)
-		if self.trans:
-			features = self.trans(features)
-		else:
-		    features = transforms.ToTensor()(features)
+		features = transforms.ToTensor()(features)
 		return features.view(features.size()[1], features.size()[2]), label
 
 	def __len__(self):
